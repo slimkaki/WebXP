@@ -25,6 +25,18 @@ const world = {
             g: 0,
             b: 0.15
         }
+    },
+    cube: {
+        cubeWidth: 1,
+        cubeHeight: 1,
+        cubeDepth: 1,
+        cubeHeightSegments: 1,
+        cubeWidthSegments: 1,
+        cubePosition: {
+            x: -2,
+            y: -2,
+            z: 1.2
+        }
     }
 };
 gui.add(world.plane, 'width', 1, 25).onChange(() => {
@@ -48,6 +60,30 @@ gui.add(world.plane.color, 'g', 0, 1).onChange(() => {
 gui.add(world.plane.color, 'b', 0, 1).onChange(() => {
     generatePlane();
 });
+gui.add(world.cube, 'cubeWidth', 1, 5).onChange(() => {
+    generateCube();
+});
+gui.add(world.cube, 'cubeHeight', 1, 5).onChange(() => {
+    generateCube();
+});
+gui.add(world.cube, 'cubeDepth', 1, 5).onChange(() => {
+    generateCube();
+});
+gui.add(world.cube, 'cubeWidthSegments', 1, 5).onChange(() => {
+    generateCube();
+});
+gui.add(world.cube, 'cubeHeightSegments', 1, 5).onChange(() => {
+    generateCube();
+});
+gui.add(world.cube.cubePosition, 'x', -5, 5).onChange(() => {
+    generateCube();
+});
+gui.add(world.cube.cubePosition, 'y', -5, 5).onChange(() => {
+    generateCube();
+});
+gui.add(world.cube.cubePosition, 'z', -5, 5).onChange(() => {
+    generateCube();
+});
 
 // Setting the camera to be on position 5
 camera.position.z = 5
@@ -67,6 +103,22 @@ scene.add(light)
 const backLight = new THREE.DirectionalLight(0xffffff, 1);
 backLight.position.set(0, 0, -1);
 scene.add(backLight)
+
+const rightLight = new THREE.DirectionalLight(0xffffff, 1);
+rightLight.position.set(1, 0, 0);
+scene.add(rightLight)
+
+const leftLight = new THREE.DirectionalLight(0xffffff, 1);
+leftLight.position.set(-1, 0, 0);
+scene.add(leftLight)
+
+const topLight = new THREE.DirectionalLight(0xffffff, 1);
+topLight.position.set(0, 1, 0);
+scene.add(topLight)
+
+const bottomLight = new THREE.DirectionalLight(0xffffff, 1);
+bottomLight.position.set(0, -1, 0);
+scene.add(bottomLight)
 
 function getHEXColor() {
     const hex = "0x"
@@ -107,8 +159,15 @@ const planeGeometry = new THREE.PlaneGeometry(5, 5, 10, 10);
 const planeMaterial = new THREE.MeshPhongMaterial({color: parseInt(hexColor, 16), side: THREE.DoubleSide, flatShading: THREE.FlatShading, vertexColors: true});
 const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
 
+const cubeGeometry = new THREE.BoxGeometry(world.cube.cubeWidth, world.cube.cubeHeight, world.cube.cubeDepth);
+const cubeMaterial = new THREE.MeshPhongMaterial({color: parseInt(hexColor, 16), });
+const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+cubeMesh.position.set(-2, -2, 1.2);
+
 // Adding objects to the scene
-scene.add(planeMesh)
+scene.add(planeMesh);
+scene.add(cubeMesh);
+
 function randomize_texture() {
     const {array} = planeMesh.geometry.attributes.position
     for (let i = 0; i < array.length; i += 3) {
@@ -123,6 +182,13 @@ function generatePlane() {
     planeMesh.geometry = new THREE.PlaneGeometry(world.plane.width, world.plane.height, world.plane.widthSegments, world.plane.heightSegments);
     randomize_texture();
     calculateVertexColors();
+}
+
+function generateCube() {
+    cubeMesh.geometry.dispose();
+    cubeMesh.geometry = new THREE.BoxGeometry(world.cube.cubeWidth, world.cube.cubeHeight, world.cube.cubeDepth, world.cube.cubeWidthSegments, world.cube.cubeHeightSegments);
+    cubeMesh.geometry.attributes.position.cubeOriginalPosition = planeMesh.geometry.attributes.position.array;
+    cubeMesh.position.set(world.cube.cubePosition.x, world.cube.cubePosition.y, world.cube.cubePosition.z);
 }
 
 const mouse = {
@@ -162,6 +228,12 @@ function animate() {
     }
     planeMesh.geometry.attributes.position.needsUpdate = true;
 
+    cubeMesh.position.x += Math.cos(Math.random())*0.001;
+    cubeMesh.position.y += Math.sin(Math.random())*0.001;
+    cubeMesh.position.z += Math.cos(Math.random())*0.0001;
+    
+    cubeMesh.geometry.attributes.position.needsUpdate = true;
+
     const intersects = raycaster.intersectObject(planeMesh);
     if (intersects.length > 0) {
         const {color} = intersects[0].object.geometry.attributes;
@@ -183,6 +255,8 @@ function animate() {
         color.needsUpdate = true
     }
 }
+
+
 
 randomize_texture();
 animate();
