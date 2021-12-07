@@ -3,24 +3,111 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module'
 
+
+// Scene
+const scene = new THREE.Scene();
+
+// Camera
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.x = 0;
+camera.position.y = 0;
+camera.position.z = 2;
+
+// Renderer
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// Controls
+const controls = new OrbitControls(camera, renderer.domElement)
+
+// TEXT
+var loader = new THREE.FontLoader();
+const gui = new GUI();
+loader.load( 'fonts/helvetiker_regular.typeface.json', function ( font ) {
+
+    const geometry = new THREE.TextGeometry( 'Hello three.js!', {
+        font: font,
+        size: 20,
+        height: 5,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 10,
+        bevelSize: 8,
+        bevelOffset: 0,
+        bevelSegments: 5
+    } );
+    var textsMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+    var text = new THREE.Mesh(geometry, textsMaterial);
+    text.position.set(0, 0, 0);
+    text.name = "cg"; 
+    scene.add(text);
+    const textFolder = gui.addFolder('Text')
+    textFolder.add(text.scale, 'x', -5, 5)
+    textFolder.add(text.scale, 'y', -5, 5)
+    textFolder.add(text.scale, 'z', -5, 5)
+    textFolder.open()
+} );
+
+
+
+const cameraFolder = gui.addFolder('Camera')
+cameraFolder.add(camera.position, 'z', -5, 10);
+cameraFolder.open()
+
+window.addEventListener(
+    'resize',
+    () => {
+        camera.aspect = window.innerWidth / window.innerHeight
+        camera.updateProjectionMatrix()
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        render()
+    },
+    false
+)
+
+// ANIMATE
+function animate() {
+    requestAnimationFrame(animate)
+    cube.rotation.x += 0.01
+    cube.rotation.y += 0.01
+    controls.update()
+    render()
+    stats.update()
+}
+
+function render() {
+    renderer.render(scene, camera)
+}
+animate();
+// animate()
+// document.body.appendChild(renderer.domElement);
+// animate();
+///////////////////////////////////////////////////////////////
+// // Scene
 // const scene = new THREE.Scene()
 
+// // Camera
 // const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100)
 // camera.position.z = 2
 
+// // Renderer
 // const renderer = new THREE.WebGLRenderer()
 // renderer.setSize(window.innerWidth, window.innerHeight)
 // document.body.appendChild(renderer.domElement)
 
+// // Controls
 // const controls = new OrbitControls(camera, renderer.domElement)
+
+// // Objects
 
 // const geometry = new THREE.BoxGeometry()
 // const material = new THREE.MeshBasicMaterial({
 //     color: 0x00ff00,
 //     wireframe: true,
 // })
-// const cube = new THREE.Mesh(geometry, material)
-// scene.add(cube)
+// const cube = new THREE.Mesh(geometry, material);
+// scene.add(cube);
 
 // window.addEventListener(
 //     'resize',
@@ -60,34 +147,4 @@ import { GUI } from 'three/examples/jsm/libs/dat.gui.module'
 // }
 
 // animate()
-
-// Criar nova cena
-var scene = new THREE.Scene();
-// Definir câmera perspectiva e posicionar ela
-var aspect = window.innerWidth/window.innerHeight;
-var camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 );
-camera.position.z = 4;
-// Preparar um renderizados para a cena, com antialiasing ligado
-var renderer = new THREE.WebGLRenderer({antialias:true});
-// Configurar a cor para limpar a imagem, no caso preto
-renderer.setClearColor("#000000");
-// Configurar a janela de renderização
-renderer.setSize( window.innerWidth, window.innerHeight );
-// Adicionar o renderizador na página web
-document.body.appendChild( renderer.domElement );
-
-// Definir malha para o cubo e seu material
-var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-var material = new THREE.MeshBasicMaterial( { color: "#FF3232" } );
-var cube = new THREE.Mesh( geometry, material );
-// Adicionar o cubo na cena
-scene.add( cube );
-// Iniciar loop de renderização
-var render = function () {
-    requestAnimationFrame( render );
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    // Renderizar a cena
-    renderer.render(scene, camera);
-};
-render();
+//////////////////////////////////////////////////////////////
