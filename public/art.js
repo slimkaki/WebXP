@@ -27,16 +27,16 @@ const world = {
         }
     }
 };
-gui.add(world.plane, 'width', 1, 20).onChange(() => {
+gui.add(world.plane, 'width', 1, 25).onChange(() => {
     generatePlane();
 });
-gui.add(world.plane, 'height', 1, 20).onChange(() => {
+gui.add(world.plane, 'height', 1, 25).onChange(() => {
     generatePlane();
 });
-gui.add(world.plane, 'widthSegments', 1, 15).onChange(() => {
+gui.add(world.plane, 'widthSegments', 1, 25).onChange(() => {
     generatePlane();
 });
-gui.add(world.plane, 'heightSegments', 1, 15).onChange(() => {
+gui.add(world.plane, 'heightSegments', 1, 25).onChange(() => {
     generatePlane();
 });
 gui.add(world.plane.color, 'r', 0, 1).onChange(() => {
@@ -109,13 +109,13 @@ const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
 
 // Adding objects to the scene
 scene.add(planeMesh)
-
 function randomize_texture() {
     const {array} = planeMesh.geometry.attributes.position
     for (let i = 0; i < array.length; i += 3) {
         const z = array[i + 2];
         array[i + 2] = z + Math.random();
     }
+    planeMesh.geometry.attributes.position.originalPosition = planeMesh.geometry.attributes.position.array;
 }
 
 function generatePlane() {
@@ -145,11 +145,23 @@ function calculateVertexColors() {
 }
 calculateVertexColors();
 
+let frame = 0;
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
+    frame += 0.01;
 
     raycaster.setFromCamera(mouse, camera);
+
+    // Moving animation
+    const {array, originalPosition} = planeMesh.geometry.attributes.position;
+    for (let i = 0; i < array.length; i += 3) {
+        array[i] = originalPosition[i] + Math.cos(frame + Math.random() - 0.05) * 0.001;
+        array[i + 1] = originalPosition[i + 1] + Math.sin(frame + Math.random() - 0.05) * 0.001;
+        array[i + 2] = originalPosition[i + 2] + Math.cos(frame + Math.random()) * 0.0001;
+    }
+    planeMesh.geometry.attributes.position.needsUpdate = true;
+
     const intersects = raycaster.intersectObject(planeMesh);
     if (intersects.length > 0) {
         const {color} = intersects[0].object.geometry.attributes;
