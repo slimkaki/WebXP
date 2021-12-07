@@ -1,0 +1,24 @@
+{
+  "name": "webxp",
+  "version": "1.0.0",
+  "description": "A three.js project for the Computer Graphics Class",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/slimkaki/WebXP.git"
+  },
+  "author": "Rafael Almada",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/slimkaki/WebXP/issues"
+  },
+  "homepage": "https://github.com/slimkaki/WebXP#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "gsap": "^3.8.0",
+    "three": "^0.132.2"
+  }
+}

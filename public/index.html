@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Some CG art!</title>    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            overflow: hidden;
+            margin: 0px;
+        }
+    </style>
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "./build/three.module.js",
+            "three/examples/jsm/controls/OrbitControls":"./jsm/controls/OrbitControls.js",
+            "three/examples/jsm/libs/stats.module":"./jsm/libs/stats.module.js",
+            "three/examples/jsm/libs/dat.gui.module":"./jsm/libs/dat.gui.module.js"
+          }
+        }
+    </script>
+</head>
+
+<body>
+    <script type="module" src="art.js"></script>
+    <div id="app">
+        <div class="absolute text-white text-center" style="top: 50%; transform: translate(-50%, -50%); left: 50%;">
+            <h1 style="font-size: 50px;">C O M P U T E R   G R A P H I C S</h1>
+            
+        </div>
+    </div>
+</body>
+<footer>
+    <div class="absolute text-white text-center -bottom-px">
+        <h2>Made by: Lucas Leal & Rafael Almada</h2>
+    </div>
+</footer>
+</html>
